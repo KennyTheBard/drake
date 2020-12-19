@@ -1,35 +1,34 @@
 import express from 'express';
-import * as dotenv from 'dotenv';
-import neo4j, { QueryResult } from 'neo4j-driver';
 
+interface Controller {
+   router: express.Router
+}
 
-dotenv.config();
+export class App {
+   public app: express.Application;
+   public port: number;
 
-var driver = neo4j.driver('neo4j://localhost:7687');
+   constructor(controllers : Controller[], port : number) {
+      this.app = express();
+      this.port = port;
 
-const app = express();
-const port = process.env.PORT;
+      this.initializeMiddlewares();
+      this.initializeControllers(controllers);
+   }
 
-app.get('/', async (req, res) => {
-   var session = driver.session()
-   const result : QueryResult = await session.run('create (s:SCENE {text: $text}) return s', {
-         text: 'This is a scene',
+   private initializeMiddlewares() {
+      this.app.use(express.json());
+   }
+
+   private initializeControllers(controllers : Controller[]) {
+      controllers.forEach((controller) => {
+         this.app.use('/api', controller.router);
       });
-   session.close()
+   }
 
-   res.send(result.records);
-});
-
-app.get('/all', async (req, res) => {
-   var session = driver.session()
-   const result : QueryResult = await session.run('match (s:SCENE) RETURN s.text as text');
-   session.close()
-
-   res.send(result.records.map(r => r.get('text')));
-});
-
-app.listen(port, () => {
-   return console.log(`server is listening on ${port}`);
-});
-
-driver.close()
+   public listen() {
+      this.app.listen(this.port, () => {
+         console.log(`App listening on the port ${this.port}`);
+      });
+   }
+}
