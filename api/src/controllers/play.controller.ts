@@ -20,4 +20,12 @@ export class PlayController {
       res.send(await this.sceneService.getCurrentForCharacter(parseInt(characterId)));
    }
 
+   makeChoice = async (req: Request, res: Response) => {
+      const characterId = req.query['characterId'];
+      if (typeof characterId !== 'string') {
+         throw new Error('Wrong format for characterId');
+      }
+      res.send(await this.sceneService.getCurrentForCharacter(parseInt(characterId)));
+   }
+
 }

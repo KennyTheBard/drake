@@ -31,7 +31,7 @@ export class AuthService {
    login = async (username: string, password: string) => {
       const session = this.neo4jDriver.session();
       const existingUsers = await session.run(
-         'MATCH (u:USER {username: $username, password: $password}) RETURN u', {
+         'MATCH (u:USER {username: $username, password: $password}) RETURN u.username AS username, EXISTS(u.authToken) AS hasAuthToken', {
             username, password
          }
       );
@@ -40,19 +40,35 @@ export class AuthService {
          throw new Error('Wrong credentials');
       }
 
-      const user = existingUsers.records[0] as unknown as User;
-      if (!user.authToken) {
-         user.authToken = uuid();
+      let authToken: string;
+      if (!existingUsers.records[0].get('hasAuthToken')) {
+         authToken = uuid();
          await session.run(
             'MATCH (u:USER {username: $username, password: $password}) SET u.authToken = $authToken', {
-               username, password, authToken: user.authToken
+               username, password, authToken
             }
          );
       }
 
       await session.close();
 
-      return user.authToken;
+      return authToken;
+   }
+
+   validate = async (authToken: string): Promise<User | null> => {
+      const session = this.neo4jDriver.session();
+      const existingUsers = await session.run(
+         'MATCH (u:USER {authToken: $authToken}) RETURN ID(u) AS id, u.username AS username', {
+            authToken
+         }
+      );
+      await session.close();
+
+      return existingUsers.records.length > 0 ? {
+         id: existingUsers.records[0].get('id'),
+         username: existingUsers.records[0].get('username'),
+         authToken
+      } : null;
    }
 
 }
