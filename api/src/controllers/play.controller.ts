@@ -1,5 +1,5 @@
-import { SceneService } from '../services/scene.service';
 import { Request, Response, Router } from 'express';
+import { PlayService } from '../services/play.service';
 
 export class PlayController {
 
@@ -7,7 +7,7 @@ export class PlayController {
    public router = Router();
 
    constructor(
-      private readonly sceneService: SceneService
+      private readonly playService: PlayService
    ) {
       this.router.post(`${this.path}`, this.getCurrentScene)
    }
@@ -17,7 +17,8 @@ export class PlayController {
       if (typeof characterId !== 'string') {
          throw new Error('Wrong format for characterId');
       }
-      res.send(await this.sceneService.getCurrentForCharacter(parseInt(characterId)));
+
+      res.send(await this.playService.getCurrentScene(req.user.id, parseInt(characterId)));
    }
 
    makeChoice = async (req: Request, res: Response) => {
@@ -25,7 +26,13 @@ export class PlayController {
       if (typeof characterId !== 'string') {
          throw new Error('Wrong format for characterId');
       }
-      res.send(await this.sceneService.getCurrentForCharacter(parseInt(characterId)));
+
+      const choiceId = req.query['choiceId'];
+      if (typeof choiceId !== 'string') {
+         throw new Error('Wrong format for choiceId');
+      }
+
+      res.send(await this.playService.makeChoice(req.user.id, parseInt(characterId), parseInt(choiceId)));
    }
 
 }

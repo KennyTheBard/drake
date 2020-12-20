@@ -1,35 +1,10 @@
-import { Driver } from "neo4j-driver";
-import { Choice } from "../models/choice";
-import { Scene } from "../models/scene";
-
+import { Driver } from 'neo4j-driver';
 
 export class SceneService {
 
    constructor(
       private readonly neo4jDriver: Driver
    ) {}
-
-   getCurrentForCharacter = async (characterId: number) : Promise<Scene> => {
-      const session = this.neo4jDriver.session();
-      const result = await session.run(
-         'MATCH (pc:PC) WHERE ID(pc) = $id MATCH (pc)-[:PLAYING]->(s:SCENE) MATCH (s)-[r:CHOOSE]->(c:CHOICE)' +
-         'RETURN ID(pc) AS sceneId, s.text AS sceneText, s.ending AS ending, ID(c) AS choiceId, c.text AS choiceText ' +
-         'ORDER BY r.priority DESC', {
-            id: characterId,
-         }
-      );
-      await session.close();
-
-      return {
-         id: result.records[0].get('sceneId'),
-         text: result.records[0].get('sceneText'),
-         ending: result.records[0].get('ending'),
-         choices: result.records.map(r => {
-            id: r.get('choiceId');
-            text: r.get('choiceText');
-         }) as unknown as Choice[]
-      }
-   }
 
    createScene = async (choiceId: number, text: string) => {
       const session = this.neo4jDriver.session();
