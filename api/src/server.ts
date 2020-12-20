@@ -9,23 +9,33 @@ import { WriteController } from './controllers/write.controller';
 import { StoryService } from './services/story.service';
 import { ChoiceService } from './services/choice.service';
 import { authenticateUser } from './middleware/authenticate-user';
+import { InstanceManager } from './util/instance-manager';
+import { PlayService } from './services/play.service';
 
 dotenv.config();
 
 var driver: Driver = neo4j.driver('neo4j://localhost:7687');
 
-const services = {
-   auth: new AuthService(driver),
-   story: new StoryService(driver),
-   scene: new SceneService(driver),
-   choice: new ChoiceService(driver),
-}
+InstanceManager.register(new AuthService(driver));
+InstanceManager.register(new StoryService(driver));
+InstanceManager.register(new SceneService(driver));
+InstanceManager.register(new ChoiceService(driver));
+InstanceManager.register(new PlayService(driver));
 
 const app = new App(
    [
-      new AuthController(services.auth),
-      new PlayController(services.scene),
-      new WriteController(authenticateUser(services.auth), services.story, services.scene, services.choice),
+      new AuthController(
+         InstanceManager.get(AuthService)
+      ),
+      new PlayController(
+         InstanceManager.get(PlayService)
+      ),
+      new WriteController(
+         authenticateUser(InstanceManager.get(AuthService)),
+         InstanceManager.get(StoryService),
+         InstanceManager.get(SceneService),
+         InstanceManager.get(ChoiceService),
+      ),
    ],
    parseInt(process.env.PORT),
 );
