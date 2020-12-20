@@ -24,18 +24,13 @@ InstanceManager.register(new PlayService(driver));
 
 const app = new App(
    [
-      new AuthController(
-         InstanceManager.get(AuthService)
-      ),
-      new PlayController(
-         InstanceManager.get(PlayService)
-      ),
-      new WriteController(
+      new AuthController(),
+      new PlayController([
          authenticateUser(InstanceManager.get(AuthService)),
-         InstanceManager.get(StoryService),
-         InstanceManager.get(SceneService),
-         InstanceManager.get(ChoiceService),
-      ),
+      ]),
+      new WriteController([
+         authenticateUser(InstanceManager.get(AuthService)),
+      ]),
    ],
    parseInt(process.env.PORT),
 );
