@@ -1,4 +1,7 @@
 import { Driver } from 'neo4j-driver';
+import { EndingScene } from '../models/ending-scene';
+import { NewScene } from '../models/new-scene';
+import { UpdateScene } from '../models/update-scene';
 
 export class SceneService {
 
@@ -6,34 +9,40 @@ export class SceneService {
       private readonly neo4jDriver: Driver
    ) {}
 
-   createScene = async (choiceId: number, text: string) => {
+   createScene = async (newScene: NewScene) => {
       const session = this.neo4jDriver.session();
       const result = await session.run(
-         'MATCH (c:CHOICE) WHERE ID(c) = $choiceId MERGE (c)-[:NEXT]->(s:SCENE {text: $text}) RETURN ID(s) AS id', {
-            choiceId, text
-         }
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY) WHERE ID(story) = $storyId AND ID(user) = $authorId ' +
+         'MERGE (scene:SCENE {text: $text})-[:PART_OF]->(story) ' +
+         (newScene.prevChoiceId ?
+            'MATCH (choice:CHOICE)-[:PART_OF]->(story) WHERE ID(choice) = $prevChoiceId ' +
+            'MERGE (choice)-[:NEXT]->(scene) ' : '') +
+         'RETURN ID(scene) AS id',
+         newScene
       );
       await session.close();
 
       return result.records[0].get('id');
    }
 
-   updateScene = async (id: number, text: string) => {
+   updateScene = async (updateSceneDto: UpdateScene) => {
       const session = this.neo4jDriver.session();
       await session.run(
-         'MATCH (s:SCENE) WHERE ID(s) = $id SET s.text = $text', {
-            id, text,
-         }
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' + 
+         'WHERE ID(user) = $authorId AND ID(story) = $storyId AND ID(scene) = $sceneId' +
+         'SET scene.text = $text',
+         updateSceneDto
       );
       await session.close();
    }
 
-   markAsEnding = async (id: number, ending: boolean) => {
+   markAsEnding = async (endingSceneDto: EndingScene) => {
       const session = this.neo4jDriver.session();
       await session.run(
-         'MATCH (s:SCENE) WHERE ID(s) = $id SET s.ending = $ending', {
-            id, ending,
-         }
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' +
+         'WHERE ID(user) = $authorId AND ID(story) = $storyId AND ID(scene) = $sceneId' +
+         'SET scene.ending = $ending',
+         endingSceneDto
       );
       await session.close();
    }

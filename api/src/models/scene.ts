@@ -1,4 +1,4 @@
-import { Choice } from "./choice";
+import { Choice } from './choice';
 
 export interface Scene {
    id: number;

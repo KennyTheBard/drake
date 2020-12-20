@@ -1,6 +1,6 @@
-import { Driver } from "neo4j-driver";
-import { Choice } from "../models/choice";
-import { Scene } from "../models/scene";
+import { Driver } from 'neo4j-driver';
+import { NewChoice } from '../models/new-choice';
+import { UpdateChoice } from '../models/update-choice';
 
 
 export class ChoiceService {
@@ -9,24 +9,27 @@ export class ChoiceService {
       private readonly neo4jDriver: Driver
    ) {}
 
-   createChoice = async (sceneId: number, text: string) => {
+   createChoice = async (choice: NewChoice) => {
       const session = this.neo4jDriver.session();
       const result = await session.run(
-         'MATCH (s:SCENE) WHERE ID(s) = $sceneId MERGE (s)-[r:OPTION]->(c:CHOICE {text: $text}) RETURN ID(c) AS id', {
-            sceneId, text,
-         }
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' +
+         'WHERE ID(story) = $storyId AND ID(user) = $authorId AND ID(scene) = $sceneId ' +
+         'MERGE (scene)-[:OPTION]->(choice:CHOICE {text: $text})-[:PART_OF]->(story) ' +
+         'RETURN ID(choice) AS id',
+         choice
       );
       await session.close();
 
       return result.records[0].get('id');
    }
 
-   updateChoice = async (id: number, text: string) => {
+   updateChoice = async (updateChoiceDto: UpdateChoice) => {
       const session = this.neo4jDriver.session();
-      const result = await session.run(
-         'MATCH (s:CHOICE) WHERE ID(s) = $id SET s.text = $text', {
-            id, text,
-         }
+      await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(choice:CHOICE) ' +
+         'WHERE ID(story) = $storyId AND ID(user) = $authorId AND ID(choice) = $choiceId ' +
+         'SET choice.text = $text',
+         updateChoiceDto
       );
       await session.close();
    }

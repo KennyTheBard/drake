@@ -35,18 +35,49 @@ export class WriteController {
          .send(await this.storyService.createStory(req.user.id, text, description));
    }
 
+   setStartingScene = async (req: Request, res: Response) => {
+      const { storyId, sceneId } = req.body;
+
+      res.send(await this.storyService.setStartingScene({
+         authorId: req.user.id,
+         storyId: parseInt(storyId),
+         startingSceneId: parseInt(sceneId)
+      }));
+   }
+
    createScene = async (req: Request, res: Response) => {
-      const { choiceId, text } = req.body;
+      const { storyId, choiceId, text } = req.body;
 
       res.status(StatusCodes.CREATED)
-         .send(await this.sceneService.createScene(parseInt(choiceId), text));
+         .send(await this.sceneService.createScene({
+            authorId: req.user.id,
+            storyId: storyId,
+            text: text,
+            prevChoiceId: parseInt(choiceId) || undefined
+         }));
+   }
+
+   markEndingScene = async (req: Request, res: Response) => {
+      const { storyId, sceneId, ending } = req.body;
+
+      res.send(await this.sceneService.markAsEnding({
+         authorId: req.user.id,
+         storyId,
+         sceneId,
+         ending
+      }));
    }
 
    createChoice = async (req: Request, res: Response) => {
-      const { sceneId, text } = req.body;
+      const { storyId, sceneId, text } = req.body;
 
       res.status(StatusCodes.CREATED)
-         .send(await this.choiceService.createChoice(parseInt(sceneId), text));
+         .send(await this.choiceService.createChoice({
+            authorId: req.user.id,
+            storyId,
+            sceneId,
+            text
+         }));
    }
 
 }
