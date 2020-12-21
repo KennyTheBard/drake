@@ -12,8 +12,10 @@ export class SceneService {
    createScene = async (newScene: NewScene) => {
       const session = this.neo4jDriver.session();
       const result = await session.run(
-         'MATCH (user:USER)-[:AUTHORS]->(story:STORY) WHERE ID(story) = $storyId AND ID(user) = $authorId ' +
-         'MERGE (scene:SCENE {text: $text})-[:PART_OF]->(story) ' +
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY) ' + 
+         'WHERE ID(story) = $storyId AND ID(user) = $authorId ' +
+         'CREATE (scene:SCENE {text: $text}) ' +
+         'MERGE (scene)-[:PART_OF]->(story) ' +
          (newScene.prevChoiceId ?
             'MATCH (choice:CHOICE)-[:PART_OF]->(story) WHERE ID(choice) = $prevChoiceId ' +
             'MERGE (choice)-[:NEXT]->(scene) ' : '') +
@@ -22,7 +24,7 @@ export class SceneService {
       );
       await session.close();
 
-      return result.records[0].get('id');
+      return result.records[0].toObject();
    }
 
    updateScene = async (updateSceneDto: UpdateScene) => {

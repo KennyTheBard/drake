@@ -14,13 +14,14 @@ export class ChoiceService {
       const result = await session.run(
          'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' +
          'WHERE ID(story) = $storyId AND ID(user) = $authorId AND ID(scene) = $sceneId ' +
-         'MERGE (scene)-[:OPTION]->(choice:CHOICE {text: $text})-[:PART_OF]->(story) ' +
+         'CREATE (choice:CHOICE {text: $text}) ' +
+         'MERGE (scene)-[:OPTION]->(choice)-[:PART_OF]->(story) ' +
          'RETURN ID(choice) AS id',
          choice
       );
       await session.close();
 
-      return result.records[0].get('id');
+      return result.records[0].toObject();
    }
 
    updateChoice = async (updateChoiceDto: UpdateChoice) => {

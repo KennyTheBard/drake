@@ -31,7 +31,7 @@ export class AuthService {
    login = async (username: string, password: string) => {
       const session = this.neo4jDriver.session();
       const existingUsers = await session.run(
-         'MATCH (u:USER {username: $username, password: $password}) RETURN u.username AS username, EXISTS(u.authToken) AS hasAuthToken', {
+         'MATCH (u:USER {username: $username, password: $password}) RETURN u.username AS username, u.authToken AS authToken', {
             username, password
          }
       );
@@ -40,8 +40,8 @@ export class AuthService {
          throw new Error('Wrong credentials');
       }
 
-      let authToken: string;
-      if (!existingUsers.records[0].get('hasAuthToken')) {
+      let authToken: string = existingUsers.records[0].get('authToken');
+      if (!authToken) {
          authToken = uuid();
          await session.run(
             'MATCH (u:USER {username: $username, password: $password}) SET u.authToken = $authToken', {

@@ -1,0 +1,30 @@
+### Create story
+POST http://localhost:3000/api/write/story
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "title": "Story",
+   "description": "And this is a description"
+}
+
+### Set starting scene
+PUT http://localhost:3000/api/write/start
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 2,
+   "sceneId": 6
+}
+
+### Create scene
+POST http://localhost:3000/api/write/scene
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 4,
+   "title": "Story",
+   "text": "This is a text"
+}

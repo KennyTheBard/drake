@@ -24,25 +24,35 @@ export class WriteController {
       if (middlewares) middlewares.forEach(mw => this.router.use(mw));
 
       this.router.post(`${this.path}/story`, this.createStory);
+      this.router.put(`${this.path}/start`, this.setStartingScene);
       this.router.post(`${this.path}/scene`, this.createScene);
+      this.router.put(`${this.path}/end`, this.markEndingScene);
       this.router.post(`${this.path}/choice`, this.createChoice);
    }
 
    createStory = async (req: Request, res: Response) => {
-      const { text, description } = req.body;
+      const { title, description } = req.body;
 
       res.status(StatusCodes.CREATED)
-         .send(await this.storyService.createStory(req.user.id, text, description));
+         .send(await this.storyService.createStory({
+            authorId: req.user.id,
+            title: title as string,
+            description: description as string
+         }));
    }
 
    setStartingScene = async (req: Request, res: Response) => {
       const { storyId, sceneId } = req.body;
 
-      res.send(await this.storyService.setStartingScene({
+      if (await this.storyService.setStartingScene({
          authorId: req.user.id,
          storyId: parseInt(storyId),
          startingSceneId: parseInt(sceneId)
-      }));
+      }) === 0) {
+         res.status(StatusCodes.NOT_FOUND).send();
+      }
+
+      res.status(StatusCodes.OK).send();
    }
 
    createScene = async (req: Request, res: Response) => {

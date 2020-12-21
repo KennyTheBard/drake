@@ -1,4 +1,4 @@
-import neo4j, { Driver, QueryResult } from 'neo4j-driver';
+import neo4j, { Driver } from 'neo4j-driver';
 import * as dotenv from 'dotenv';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
@@ -14,7 +14,11 @@ import { PlayService } from './services/play.service';
 
 dotenv.config();
 
-var driver: Driver = neo4j.driver('neo4j://localhost:7687');
+var driver: Driver = neo4j.driver(
+   'neo4j://localhost:7687',  
+   undefined, 
+   { disableLosslessIntegers: true }
+);
 
 InstanceManager.register(new AuthService(driver));
 InstanceManager.register(new StoryService(driver));

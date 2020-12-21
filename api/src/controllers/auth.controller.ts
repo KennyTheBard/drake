@@ -22,11 +22,19 @@ export class AuthController {
    }
 
    register = async (req: Request, res: Response) => {
-      await this.authService.register(req.body.username, req.body.password)
-      res.status(StatusCodes.CREATED).send();
+      try {
+         await this.authService.register(req.body.username, req.body.password);
+         res.status(StatusCodes.CREATED).send();
+      } catch (err) {
+         res.status(401).send(err.message);
+      }
    }
 
    login = async (req: Request, res: Response) => {
-      res.send(await this.authService.login(req.body.username, req.body.password))
+      try {
+         res.send(await this.authService.login(req.body.username, req.body.password))
+      } catch (err) {
+         res.status(401).send(err.message);
+      }
    }
 }
