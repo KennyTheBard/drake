@@ -1,6 +1,7 @@
 import { Driver } from "neo4j-driver";
 import { NewStory } from '../models/new-story';
 import { StartingScene } from '../models/starting-scene';
+import { Story } from '../models/story';
 
 
 export class StoryService {
@@ -21,6 +22,33 @@ export class StoryService {
       await session.close();
 
       return result.records[0].toObject();
+   }
+
+   getStory = async (authorId: number, storyId: number): Promise<Story> => {
+      const session = this.neo4jDriver.session();
+      const result = await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY) ' + 
+         'WHERE ID(user) = $authorId AND ID(story) = $storyId ' +
+         'RETURN ID(story) AS id, story.title AS title, story.description AS description, ID(user) AS authorId', {
+            authorId, storyId
+         }
+      );
+      await session.close();
+
+      return result.records[0].toObject() as Story;
+   }
+
+   getAllStories = async (authorId: number): Promise<Story[]> => {
+      const session = this.neo4jDriver.session();
+      const result = await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY) WHERE ID(user) = $authorId ' +
+         'RETURN ID(story) AS id, story.title AS title, story.description AS description, ID(user) AS authorId', {
+            authorId
+         }
+      );
+      await session.close();
+
+      return result.records.map(r => r.toObject() as Story);
    }
 
    updateStory = async (id: number, text: string) => {

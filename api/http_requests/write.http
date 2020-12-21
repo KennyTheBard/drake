@@ -8,6 +8,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
    "description": "And this is a description"
 }
 
+
 ### Set starting scene
 PUT http://localhost:3000/api/write/start
 Content-Type: application/json
@@ -18,13 +19,14 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
    "sceneId": 6
 }
 
+
 ### Create scene
 POST http://localhost:3000/api/write/scene
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 {
-   "storyId": 4,
+   "storyId": 7,
    "title": "Story",
    "text": "This is a text"
 }

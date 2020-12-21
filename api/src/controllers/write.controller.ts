@@ -56,25 +56,26 @@ export class WriteController {
    }
 
    createScene = async (req: Request, res: Response) => {
-      const { storyId, choiceId, text } = req.body;
+      const { storyId, choiceId, text, isEnding } = req.body;
 
       res.status(StatusCodes.CREATED)
          .send(await this.sceneService.createScene({
             authorId: req.user.id,
             storyId: storyId,
             text: text,
-            prevChoiceId: parseInt(choiceId) || undefined
+            prevChoiceId: choiceId,
+            isEnding: isEnding || false
          }));
    }
 
    markEndingScene = async (req: Request, res: Response) => {
-      const { storyId, sceneId, ending } = req.body;
+      const { storyId, sceneId, isEnding } = req.body;
 
       res.send(await this.sceneService.markAsEnding({
          authorId: req.user.id,
          storyId,
          sceneId,
-         ending
+         isEnding
       }));
    }
 

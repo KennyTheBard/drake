@@ -1,6 +1,7 @@
 import { Driver } from 'neo4j-driver';
 import { EndingScene } from '../models/ending-scene';
 import { NewScene } from '../models/new-scene';
+import { Scene } from '../models/scene';
 import { UpdateScene } from '../models/update-scene';
 
 export class SceneService {
@@ -14,7 +15,7 @@ export class SceneService {
       const result = await session.run(
          'MATCH (user:USER)-[:AUTHORS]->(story:STORY) ' + 
          'WHERE ID(story) = $storyId AND ID(user) = $authorId ' +
-         'CREATE (scene:SCENE {text: $text}) ' +
+         'CREATE (scene:SCENE {text: $text, isEnding: $isEnding}) ' +
          'MERGE (scene)-[:PART_OF]->(story) ' +
          (newScene.prevChoiceId ?
             'MATCH (choice:CHOICE)-[:PART_OF]->(story) WHERE ID(choice) = $prevChoiceId ' +
@@ -27,11 +28,39 @@ export class SceneService {
       return result.records[0].toObject();
    }
 
+   getScene = async (authorId: number, storyId: number, sceneId: number): Promise<Scene> => {
+      const session = this.neo4jDriver.session();
+      const result = await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' + 
+         'WHERE ID(user) = $authorId AND ID(story) = $storyId AND ID(scene) = $sceneId ' +
+         'RETURN ID(scene) AS id, scene.text AS text, scene.isEnding AS isEnding ', {
+            authorId, storyId, sceneId
+         }
+      );
+      await session.close();
+
+      return result.records[0].toObject() as Scene;
+   }
+
+   getAllScenes = async (authorId: number, storyId: number): Promise<Scene[]> => {
+      const session = this.neo4jDriver.session();
+      const result = await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' + 
+         'WHERE ID(user) = $authorId AND ID(story) = $storyId ' +
+         'RETURN ID(scene) AS id, scene.text AS text, scene.isEnding AS isEnding ', {
+            authorId, storyId
+         }
+      );
+      await session.close();
+
+      return result.records.map(r => r.toObject() as Scene);
+   }
+
    updateScene = async (updateSceneDto: UpdateScene) => {
       const session = this.neo4jDriver.session();
       await session.run(
          'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' + 
-         'WHERE ID(user) = $authorId AND ID(story) = $storyId AND ID(scene) = $sceneId' +
+         'WHERE ID(user) = $authorId AND ID(story) = $storyId AND ID(scene) = $sceneId ' +
          'SET scene.text = $text',
          updateSceneDto
       );
@@ -42,8 +71,8 @@ export class SceneService {
       const session = this.neo4jDriver.session();
       await session.run(
          'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' +
-         'WHERE ID(user) = $authorId AND ID(story) = $storyId AND ID(scene) = $sceneId' +
-         'SET scene.ending = $ending',
+         'WHERE ID(user) = $authorId AND ID(story) = $storyId AND ID(scene) = $sceneId ' +
+         'SET scene.isEnding = $isEnding',
          endingSceneDto
       );
       await session.close();

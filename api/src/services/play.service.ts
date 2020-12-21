@@ -13,7 +13,7 @@ export class PlayService {
       const result = await session.run(
          'MATCH (u:USER)-[:CONTROLS]->(pc:PC)-[:PLAYING]->(s:SCENE)-[r:CHOOSE]->(c:CHOICE) ' +
          'WHERE ID(u) = $userId AND ID(pc) = $characterId ' +
-         'RETURN ID(pc) AS sceneId, s.text AS sceneText, s.ending AS ending, ID(c) AS choiceId, c.text AS choiceText ' +
+         'RETURN ID(pc) AS sceneId, s.text AS sceneText, s.isEnding AS isEnding, ID(c) AS choiceId, c.text AS choiceText ' +
          'ORDER BY r.priority DESC', {
             userId, characterId,
          }
@@ -27,7 +27,7 @@ export class PlayService {
       return {
          id: result.records[0].get('sceneId'),
          text: result.records[0].get('sceneText'),
-         ending: result.records[0].get('ending'),
+         isEnding: result.records[0].get('isEnding'),
          choices: result.records.map(r => {
             id: r.get('choiceId');
             text: r.get('choiceText');

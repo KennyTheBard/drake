@@ -11,6 +11,7 @@ import { ChoiceService } from './services/choice.service';
 import { authenticateUser } from './middleware/authenticate-user';
 import { InstanceManager } from './util/instance-manager';
 import { PlayService } from './services/play.service';
+import { ReadController } from './controllers/read.controller';
 
 dotenv.config();
 
@@ -30,6 +31,9 @@ const app = new App(
    [
       new AuthController(),
       new PlayController([
+         authenticateUser(InstanceManager.get(AuthService)),
+      ]),
+      new ReadController([
          authenticateUser(InstanceManager.get(AuthService)),
       ]),
       new WriteController([
