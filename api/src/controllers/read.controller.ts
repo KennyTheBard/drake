@@ -25,6 +25,8 @@ export class ReadController {
 
       this.router.get(`${this.path}/story/:storyId/scene/:sceneId`, this.getScene);
       this.router.get(`${this.path}/story/:storyId/scene`, this.getAllScenes);
+      this.router.get(`${this.path}/story/:storyId/choice/:choiceId`, this.getChoice);
+      this.router.get(`${this.path}/story/:storyId/choice`, this.getAllChoices);
       this.router.get(`${this.path}/story/:storyId`, this.getStory);
       this.router.get(`${this.path}/story`, this.getAllStories);
    }
@@ -40,7 +42,6 @@ export class ReadController {
    }
 
    getScene = async (req: Request, res: Response) => {
-      console.log(req.params)
       const storyId = parseInt(req.params['storyId'] as string);
       const sceneId = parseInt(req.params['sceneId'] as string);
 
@@ -53,14 +54,20 @@ export class ReadController {
       res.send(await this.sceneService.getAllScenes(req.user.id, storyId));
    }
 
-   // getChoice = async (req: Request, res: Response) => {
-   //    const choiceId = parseInt(req.query['id'] as string);
+   getChoice = async (req: Request, res: Response) => {
+      const storyId = parseInt(req.params['storyId'] as string);
+      const choiceId = parseInt(req.params['choiceId'] as string);
 
-   //    res.send(await this.choiceService.getChoice(req.user.id, choiceId));
-   // }
+      res.send(await this.choiceService.getChoice(req.user.id, storyId, choiceId));
+   }
 
-   // getAllChoices = async (req: Request, res: Response) => {
-   //    res.send(await this.choiceService.getAllChoices(req.user.id));
-   // }
+   getAllChoices = async (req: Request, res: Response) => {
+      const storyId = parseInt(req.params['storyId'] as string);
+
+      res.send(await this.choiceService.getAllChoices({
+         authorId: req.user.id,
+         storyId
+      }));
+   }
 
 }

@@ -18,6 +18,7 @@ export class SceneService {
          'CREATE (scene:SCENE {text: $text, isEnding: $isEnding}) ' +
          'MERGE (scene)-[:PART_OF]->(story) ' +
          (newScene.prevChoiceId ?
+            'WITH story, scene ' +
             'MATCH (choice:CHOICE)-[:PART_OF]->(story) WHERE ID(choice) = $prevChoiceId ' +
             'MERGE (choice)-[:NEXT]->(scene) ' : '') +
          'RETURN ID(scene) AS id',

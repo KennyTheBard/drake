@@ -15,8 +15,8 @@ Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 {
-   "storyId": 2,
-   "sceneId": 6
+   "storyId": 7,
+   "sceneId": 12
 }
 
 
@@ -28,5 +28,40 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 {
    "storyId": 7,
    "title": "Story",
-   "text": "This is a text"
+   "text": "This is a text",
+   "choiceId": 14
+}
+
+### Mark scene as ending
+PUT http://localhost:3000/api/write/end
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "sceneId": 12,
+   "isEnding": true
+}
+
+
+### Create choice
+POST http://localhost:3000/api/write/choice
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "sceneId": 12,
+   "text": "This is a choice"
+}
+
+### Bind scene to choice
+PUT http://localhost:3000/api/write/bind/option
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "prevSceneId": 12,
+   "choiceId": 14
 }
