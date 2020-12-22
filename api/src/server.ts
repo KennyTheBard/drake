@@ -12,23 +12,9 @@ import { authenticateUser } from './middleware/authenticate-user';
 import { InstanceManager } from './util/instance-manager';
 import { PlayService } from './services/play.service';
 import { ReadController } from './controllers/read.controller';
-import winston from 'winston';
+import { winstonLogger } from './util/logger';
 
 dotenv.config();
-
-const winstonLogger = winston.createLogger({
-   level: 'info',
-   format: winston.format.json(),
-   defaultMeta: { service: 'user-service' },
-   transports: [
-     //
-     // - Write all logs with level `error` and below to `error.log`
-     // - Write all logs with level `info` and below to `combined.log`
-     //
-     new winston.transports.File({ filename: 'error.log', level: 'error' }),
-     new winston.transports.File({ filename: 'combined.log' }),
-   ],
- });
 
 var driver: Driver = neo4j.driver(
    'neo4j://localhost:7687',
