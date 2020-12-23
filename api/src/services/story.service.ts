@@ -1,7 +1,9 @@
 import { Driver } from "neo4j-driver";
 import { NewStory } from '../models/new-story';
+import { Scene } from '../models/scene';
 import { StartingScene } from '../models/starting-scene';
 import { Story } from '../models/story';
+import { StoryPart } from '../models/story-part';
 
 
 export class StoryService {
@@ -27,11 +29,11 @@ export class StoryService {
    getStory = async (authorId: number, storyId: number): Promise<Story> => {
       const session = this.neo4jDriver.session();
       const result = await session.run(
-         'MATCH (user:USER)-[:AUTHORS]->(story:STORY) ' + 
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY) ' +
          'WHERE ID(user) = $authorId AND ID(story) = $storyId ' +
          'RETURN ID(story) AS id, story.title AS title, story.description AS description, ID(user) AS authorId', {
-            authorId, storyId
-         }
+         authorId, storyId
+      }
       );
       await session.close();
 
@@ -43,8 +45,8 @@ export class StoryService {
       const result = await session.run(
          'MATCH (user:USER)-[:AUTHORS]->(story:STORY) WHERE ID(user) = $authorId ' +
          'RETURN ID(story) AS id, story.title AS title, story.description AS description, ID(user) AS authorId', {
-            authorId
-         }
+         authorId
+      }
       );
       await session.close();
 
@@ -64,18 +66,40 @@ export class StoryService {
 
    setStartingScene = async (startingSceneDto: StartingScene): Promise<number> => {
       const session = this.neo4jDriver.session();
+      // unset previous starting scene
+      await session.run(
+         'MATCH (user:USER) WHERE ID(user) = $authorId ' +
+         'MATCH (user)-[:AUTHORS]->(story:STORY) WHERE ID(story) = $storyId ' +
+         'MATCH (story)-[r:STARTS_WITH]->(:SCENE) DELETE r',
+         startingSceneDto
+      );
+
+      // set current starting scene
       const result = await session.run(
          'MATCH (user:USER) WHERE ID(user) = $authorId ' +
          'MATCH (user)-[:AUTHORS]->(story:STORY) WHERE ID(story) = $storyId ' +
-         'MATCH (scene:SCENE) WHERE ID(scene) = $startingSceneId ' +
-         'MATCH (story)-[r:STARTS_WITH]->(:SCENE) DELETE r ' +
-         'MERGE (story)-[:STARTS_WITH]->(scene) ' +
-         'RETURN scene',
+         'MATCH (story)<-[:PART_OF]-(scene:SCENE) WHERE ID(scene) = $startingSceneId ' +
+         'MERGE (story)-[:STARTS_WITH]->(scene)',
          startingSceneDto
       );
+
       await session.close();
 
       return result.records.length;
+   }
+
+   getStartingScene = async (storyPartDto: StoryPart): Promise<Scene> => {
+      const session = this.neo4jDriver.session();
+      const result = await session.run(
+         'MATCH (user:USER) WHERE ID(user) = $authorId ' +
+         'MATCH (user)-[:AUTHORS]->(story:STORY) WHERE ID(story) = $storyId ' +
+         'MATCH (story)<-[:PART_OF]-(scene:SCENE)<-[:STARTS_WITH]-(story) ' +
+         'RETURN ID(scene) AS id, scene.text AS text, scene.isEnding AS isEnding',
+         storyPartDto
+      );
+      await session.close();
+
+      return result.records[0].toObject() as unknown as Scene;
    }
 
 }

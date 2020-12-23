@@ -1,4 +1,5 @@
 import { Driver } from 'neo4j-driver';
+import { BindNextScene } from '../models/bind-next-scene';
 import { EndingScene } from '../models/ending-scene';
 import { NewScene } from '../models/new-scene';
 import { Scene } from '../models/scene';
@@ -75,6 +76,18 @@ export class SceneService {
          'WHERE ID(user) = $authorId AND ID(story) = $storyId AND ID(scene) = $sceneId ' +
          'SET scene.isEnding = $isEnding',
          endingSceneDto
+      );
+      await session.close();
+   }
+
+   bindAsNext = async (bindSceneDto: BindNextScene) => {
+      const session = this.neo4jDriver.session();
+      await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' +
+         'WHERE ID(story) = $storyId AND ID(user) = $authorId AND ID(scene) = $nextSceneId ' +
+         'MATCH (story)<-[:PART_OF]-(choice:CHOICE) WHERE ID(choice) = $choiceId ' +
+         'MERGE (choice)-[:NEXT]->(scene)',
+         bindSceneDto
       );
       await session.close();
    }

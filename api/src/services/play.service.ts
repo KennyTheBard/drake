@@ -1,5 +1,6 @@
 import { Driver } from 'neo4j-driver';
 import { Choice } from '../models/choice';
+import { PlayScene } from '../models/play-scene';
 import { Scene } from '../models/scene';
 
 export class PlayService {
@@ -8,7 +9,7 @@ export class PlayService {
       private readonly neo4jDriver: Driver
    ) {}
 
-   getCurrentScene = async (userId: number, characterId: number) : Promise<Scene> => {
+   getCurrentScene = async (userId: number, characterId: number) : Promise<PlayScene> => {
       const session = this.neo4jDriver.session();
       const result = await session.run(
          'MATCH (u:USER)-[:CONTROLS]->(pc:PC)-[:PLAYING]->(s:SCENE)-[r:CHOOSE]->(c:CHOICE) ' +

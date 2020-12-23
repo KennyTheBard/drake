@@ -29,7 +29,7 @@ export class WriteController {
       this.router.put(`${this.path}/end`, this.markEndingScene);
       this.router.post(`${this.path}/choice`, this.createChoice);
       this.router.put(`${this.path}/bind/option`, this.bindSceneToChoice)
-      // this.router.put(`${this.path}/bind/next`, this.bindChoiceToScene)
+      this.router.put(`${this.path}/bind/next`, this.bindChoiceToScene)
    }
 
    createStory = async (req: Request, res: Response) => {
@@ -100,6 +100,19 @@ export class WriteController {
          authorId: req.user.id,
          storyId,
          prevSceneId,
+         choiceId
+      });
+
+      res.send();
+   }
+ 
+   bindChoiceToScene = async (req: Request, res: Response) => {
+      const { storyId, nextSceneId, choiceId } = req.body;
+
+      await this.sceneService.bindAsNext({
+         authorId: req.user.id,
+         storyId,
+         nextSceneId,
          choiceId
       });
 

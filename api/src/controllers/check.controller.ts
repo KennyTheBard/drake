@@ -20,9 +20,8 @@ export class CheckController {
       // TODO: rewrite deadends as scenes 
       this.router.get(`${this.path}/:storyId/deadend`, this.checkForDeadends);
       this.router.get(`${this.path}/:storyId/dangling`, this.checkForDanglings);
-      // TODO: Fake endings
-      // TODO: Unreachable plots
-
+      this.router.get(`${this.path}/:storyId/fake-endings`, this.checkForFakeEndings);
+      this.router.get(`${this.path}/:storyId/unreachable`, this.checkForUnreachable);
    }
 
    checkForDeadends = async (req: Request, res: Response) => {
@@ -38,6 +37,24 @@ export class CheckController {
       const storyId = parseInt(req.params['storyId'] as string);
 
       res.send(await this.checkService.checkForDanglings({
+         authorId: req.user.id,
+         storyId
+      }));
+   }
+
+   checkForFakeEndings = async (req: Request, res: Response) => {
+      const storyId = parseInt(req.params['storyId'] as string);
+
+      res.send(await this.checkService.checkForFakeEndings({
+         authorId: req.user.id,
+         storyId
+      }));
+   }
+
+   checkForUnreachable = async (req: Request, res: Response) => {
+      const storyId = parseInt(req.params['storyId'] as string);
+
+      res.send(await this.checkService.checkForUnreachable({
          authorId: req.user.id,
          storyId
       }));

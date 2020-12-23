@@ -16,7 +16,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 {
    "storyId": 7,
-   "sceneId": 12
+   "sceneId": 14
 }
 
 
@@ -55,7 +55,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
    "text": "This is a choice"
 }
 
-### Bind scene to choice
+### Bind choice as option
 PUT http://localhost:3000/api/write/bind/option
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
@@ -63,5 +63,16 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 {
    "storyId": 7,
    "prevSceneId": 12,
+   "choiceId": 14
+}
+
+### Bind scene as next
+PUT http://localhost:3000/api/write/bind/next
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "nextSceneId": 12,
    "choiceId": 14
 }

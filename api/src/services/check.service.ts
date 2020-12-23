@@ -19,7 +19,7 @@ export class CheckService {
       );
       await session.close();
 
-      return result.records.map(r => r.toObject as unknown as Scene);
+      return result.records.map(r => r.toObject() as unknown as Scene);
    }
 
    checkForDanglings = async (storyPartDto: StoryPart): Promise<Choice[]> => {
@@ -32,7 +32,38 @@ export class CheckService {
       );
       await session.close();
 
-      return result.records.map(r => r.toObject as unknown as Choice);
+      return result.records.map(r => r.toObject() as unknown as Choice);
+   }
+
+   checkForFakeEndings = async (storyPartDto: StoryPart): Promise<Scene[]> => {
+      const session = this.neo4jDriver.session();
+      const result = await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' +
+         'WHERE ID(story) = $storyId AND ID(user) = $authorId AND scene.isEnding = TRUE ' +
+         'MATCH (scene)-[:OPTION]->(choice:CHOICE) WITH scene, COUNT(choice) AS choicesNum ' +
+         'WHERE choicesNum > 0 ' +
+         'RETURN ID(scene) AS id, scene.text AS text, scene.isEnding AS isEnding',
+         storyPartDto
+      );
+      await session.close();
+
+      return result.records.map(r => r.toObject() as unknown as Scene);
+   }
+
+   checkForUnreachable = async (storyPartDto: StoryPart): Promise<Scene[]> => {
+      const session = this.neo4jDriver.session();
+      const result = await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY) ' +
+         'WHERE ID(story) = $storyId AND ID(user) = $authorId ' +
+         'MATCH (story)-[:STARTS_WITH]->(startingScene:SCENE) ' +
+         'MATCH (story)<-[:PART_OF]-(scene:SCENE) ' +
+         'WHERE NOT EXISTS ((startingScene)-[*]->(scene))' +
+         'RETURN ID(scene) AS id, scene.text AS text, scene.isEnding AS isEnding',
+         storyPartDto
+      );
+      await session.close();
+
+      return result.records.map(r => r.toObject() as unknown as Scene);
    }
 
 }

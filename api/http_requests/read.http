@@ -22,6 +22,12 @@ Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 
+### Get starting scene of a story
+GET http://localhost:3000/api/read/story/7/start
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+
 ### Get all choices for a story
 GET http://localhost:3000/api/read/story/7/choice
 Content-Type: application/json

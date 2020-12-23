@@ -1,0 +1,22 @@
+### Check for deadends (scenes without choices but not marked as endings)
+GET http://localhost:3000/api/check/7/deadend
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+
+### Check for dangling choices
+GET http://localhost:3000/api/check/7/dangling
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+
+### Check for fake endings (scenes marked as ending but with choices)
+GET http://localhost:3000/api/check/7/fake-endings
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+
+### Check for unreachable plots
+GET http://localhost:3000/api/check/7/unreachable
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3

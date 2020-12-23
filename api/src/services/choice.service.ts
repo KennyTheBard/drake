@@ -1,5 +1,5 @@
 import { Driver } from 'neo4j-driver';
-import { BindChoice } from '../models/bind-choice';
+import { BindOptionChoice } from '../models/bind-option-choice';
 import { Choice } from '../models/choice';
 import { NewChoice } from '../models/new-choice';
 import { StoryPart } from '../models/story-part';
@@ -66,7 +66,7 @@ export class ChoiceService {
       await session.close();
    }
 
-   bindAsOption = async (bindChoiceDto: BindChoice) => {
+   bindAsOption = async (bindChoiceDto: BindOptionChoice) => {
       const session = this.neo4jDriver.session();
       await session.run(
          'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' +
