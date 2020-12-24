@@ -24,6 +24,7 @@ export class EraseController {
       if (middlewares) middlewares.forEach(mw => this.router.use(mw));
 
       this.router.delete(`${this.path}/choice`, this.deleteChoice);
+      this.router.delete(`${this.path}/scene`, this.deleteScene);
    }
 
    /**
@@ -36,6 +37,19 @@ export class EraseController {
          req.user.id,
          parseInt(storyId),
          parseInt(choiceId)
+      ));
+   }
+
+   /**
+    * DELETE /erase/scene
+    */
+   deleteScene = async (req: Request, res: Response) => {
+      const { storyId, sceneId } = req.body;
+
+      res.send(await this.sceneService.deleteScene(
+         req.user.id,
+         parseInt(storyId),
+         parseInt(sceneId)
       ));
    }
 

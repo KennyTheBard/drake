@@ -92,4 +92,15 @@ export class SceneService {
       await session.close();
    }
 
+   deleteScene = async (authorId: number, storyId: number, sceneId: number) => {
+      const session = this.neo4jDriver.session();
+      await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(scene:SCENE) ' +
+         'WHERE ID(story) = $storyId AND ID(user) = $authorId AND ID(scene) = $sceneId ' +
+         'DETACH DELETE scene', {
+            authorId, storyId, sceneId   
+         });
+      await session.close();
+   }
+
 }
