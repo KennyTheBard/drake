@@ -38,7 +38,11 @@ export class ChoiceService {
       );
       await session.close();
 
-      return result.records[0].toObject() as Choice;
+      if (result.records.length > 0) {
+         return result.records[0].toObject() as Choice;
+      } else {
+         return undefined;
+      }
    }
 
    getAllChoices = async (storyPartDto: StoryPart): Promise<Choice[]> => {
@@ -75,6 +79,17 @@ export class ChoiceService {
          'MERGE (scene)-[:OPTION]->(choice)',
          bindChoiceDto
       );
+      await session.close();
+   }
+
+   deleteChoice = async (authorId: number, storyId: number, choiceId: number) => {
+      const session = this.neo4jDriver.session();
+      await session.run(
+         'MATCH (user:USER)-[:AUTHORS]->(story:STORY)<-[:PART_OF]-(choice:CHOICE) ' +
+         'WHERE ID(story) = $storyId AND ID(user) = $authorId AND ID(choice) = $choiceId ' +
+         'DETACH DELETE choice', {
+            authorId, storyId, choiceId   
+         });
       await session.close();
    }
 

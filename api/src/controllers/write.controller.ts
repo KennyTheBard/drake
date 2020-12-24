@@ -32,6 +32,9 @@ export class WriteController {
       this.router.put(`${this.path}/bind/next`, this.bindChoiceToScene)
    }
 
+   /**
+    * POST /write/story
+    */
    createStory = async (req: Request, res: Response) => {
       const { title, description } = req.body;
 
@@ -43,6 +46,9 @@ export class WriteController {
          }));
    }
 
+   /**
+    * PUT /write/start
+    */
    setStartingScene = async (req: Request, res: Response) => {
       const { storyId, sceneId } = req.body;
 
@@ -57,63 +63,78 @@ export class WriteController {
       res.status(StatusCodes.OK).send();
    }
 
+   /**
+    * POST /write/scene
+    */
    createScene = async (req: Request, res: Response) => {
       const { storyId, choiceId, text, isEnding } = req.body;
 
       res.status(StatusCodes.CREATED)
          .send(await this.sceneService.createScene({
             authorId: req.user.id,
-            storyId: storyId,
+            storyId: parseInt(storyId),
             text: text,
-            prevChoiceId: choiceId,
+            prevChoiceId: parseInt(choiceId),
             isEnding: isEnding || false
          }));
    }
 
+   /**
+    * PUT /write/end
+    */
    markEndingScene = async (req: Request, res: Response) => {
       const { storyId, sceneId, isEnding } = req.body;
 
       res.send(await this.sceneService.markAsEnding({
          authorId: req.user.id,
-         storyId,
-         sceneId,
+         storyId: parseInt(storyId),
+         sceneId: parseInt(sceneId),
          isEnding
       }));
    }
 
+   /**
+    * POST /write/choice
+    */
    createChoice = async (req: Request, res: Response) => {
       const { storyId, sceneId, text } = req.body;
 
       res.status(StatusCodes.CREATED)
          .send(await this.choiceService.createChoice({
             authorId: req.user.id,
-            storyId,
-            sceneId,
+            storyId: parseInt(storyId),
+            sceneId: parseInt(sceneId),
             text
          }));
    }
 
+   /**
+    * PUT /write/option
+    */
    bindSceneToChoice = async (req: Request, res: Response) => {
       const { storyId, prevSceneId, choiceId } = req.body;
 
       await this.choiceService.bindAsOption({
          authorId: req.user.id,
-         storyId,
-         prevSceneId,
-         choiceId
+         storyId: parseInt(storyId),
+         prevSceneId: parseInt(prevSceneId),
+         choiceId: parseInt(choiceId)
       });
 
       res.send();
    }
  
+   /**
+    * PUT /write/next
+    */
    bindChoiceToScene = async (req: Request, res: Response) => {
       const { storyId, nextSceneId, choiceId } = req.body;
 
       await this.sceneService.bindAsNext({
          authorId: req.user.id,
-         storyId,
-         nextSceneId,
-         choiceId
+         storyId: parseInt(storyId),
+         nextSceneId: parseInt(nextSceneId),
+         choiceId: parseInt(choiceId)
       });
 
       res.send();

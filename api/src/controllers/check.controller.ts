@@ -24,6 +24,9 @@ export class CheckController {
       this.router.get(`${this.path}/:storyId/unreachable`, this.checkForUnreachable);
    }
 
+   /**
+    * GET /check/:storyId/deadend
+    */
    checkForDeadends = async (req: Request, res: Response) => {
       const storyId = parseInt(req.params['storyId'] as string);
 
@@ -33,6 +36,9 @@ export class CheckController {
       }));
    }
 
+   /**
+    * GET /check/:storyId/dangling
+    */
    checkForDanglings = async (req: Request, res: Response) => {
       const storyId = parseInt(req.params['storyId'] as string);
 
@@ -42,6 +48,9 @@ export class CheckController {
       }));
    }
 
+   /**
+    * GET /check/:storyId/fake-endings
+    */
    checkForFakeEndings = async (req: Request, res: Response) => {
       const storyId = parseInt(req.params['storyId'] as string);
 
@@ -51,6 +60,9 @@ export class CheckController {
       }));
    }
 
+   /**
+    * GET /check/:storyId/unreachable
+    */
    checkForUnreachable = async (req: Request, res: Response) => {
       const storyId = parseInt(req.params['storyId'] as string);
 

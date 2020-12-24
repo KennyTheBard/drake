@@ -15,6 +15,7 @@ import { ReadController } from './controllers/read.controller';
 import { winstonLogger } from './util/logger';
 import { CheckService } from './services/check.service';
 import { CheckController } from './controllers/check.controller';
+import { EraseController } from './controllers/erase.controller';
 
 dotenv.config();
 
@@ -24,7 +25,7 @@ var driver: Driver = neo4j.driver(
    {
       disableLosslessIntegers: true,
       logging: {
-         level: 'debug',
+         level: 'error',
          logger: (level, message) => {
             winstonLogger.log(level, message);
          }
@@ -53,6 +54,9 @@ const app = new App(
          authenticateUser(InstanceManager.get(AuthService)),
       ]),
       new CheckController([
+         authenticateUser(InstanceManager.get(AuthService)),
+      ]),
+      new EraseController([
          authenticateUser(InstanceManager.get(AuthService)),
       ]),
    ],

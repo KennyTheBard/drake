@@ -16,28 +16,24 @@ export class PlayController {
 
       if (middlewares) middlewares.forEach(mw => this.router.use(mw));
 
-      this.router.post(`${this.path}`, this.getCurrentScene)
+      this.router.get(`${this.path}`, this.getCurrentScene);
+      this.router.post(`${this.path}`, this.makeChoice)
    }
 
+   /**
+    * GET /play?characterId=:characterId
+    */
    getCurrentScene = async (req: Request, res: Response) => {
-      const characterId = req.query['characterId'];
-      if (typeof characterId !== 'string') {
-         throw new Error('Wrong format for characterId');
-      }
+      const characterId = req.query['characterId'] as string;
       
       res.send(await this.playService.getCurrentScene(req.user.id, parseInt(characterId)));
    }
 
+   /**
+    * POST /play
+    */
    makeChoice = async (req: Request, res: Response) => {
-      const characterId = req.query['characterId'];
-      if (typeof characterId !== 'string') {
-         throw new Error('Wrong format for characterId');
-      }
-
-      const choiceId = req.query['choiceId'];
-      if (typeof choiceId !== 'string') {
-         throw new Error('Wrong format for choiceId');
-      }
+      const { characterId, choiceId } = req.body;
 
       res.send(await this.playService.makeChoice(req.user.id, parseInt(characterId), parseInt(choiceId)));
    }

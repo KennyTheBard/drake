@@ -1,5 +1,4 @@
 import { Request, RequestHandler, Response, Router } from 'express';
-import { StatusCodes } from 'http-status-codes';
 import { SceneService } from '../services/scene.service';
 import { ChoiceService } from '../services/choice.service';
 import { StoryService } from '../services/story.service';
@@ -32,16 +31,25 @@ export class ReadController {
       this.router.get(`${this.path}/story`, this.getAllStories);
    }
 
+   /**
+    * GET /read/story
+    */
+   getAllStories = async (req: Request, res: Response) => {
+      res.send(await this.storyService.getAllStories(req.user.id));
+   }
+
+   /**
+    * GET /read/story/:storyId
+    */
    getStory = async (req: Request, res: Response) => {
       const storyId = parseInt(req.params['storyId'] as string);
 
       res.send(await this.storyService.getStory(req.user.id, storyId));
    }
 
-   getAllStories = async (req: Request, res: Response) => {
-      res.send(await this.storyService.getAllStories(req.user.id));
-   }
-
+   /**
+    * GET /read/story/:storyId/start
+    */
    getStartingScene = async (req: Request, res: Response) => {
       const storyId = parseInt(req.params['storyId'] as string);
 
@@ -51,6 +59,18 @@ export class ReadController {
       }));
    }
 
+   /**
+    * GET /read/story/:storyId/scene
+    */
+   getAllScenes = async (req: Request, res: Response) => {
+      const storyId = parseInt(req.params['storyId'] as string);
+
+      res.send(await this.sceneService.getAllScenes(req.user.id, storyId));
+   }
+
+   /**
+    * GET /read/story/:storyId/scene/:sceneId
+    */
    getScene = async (req: Request, res: Response) => {
       const storyId = parseInt(req.params['storyId'] as string);
       const sceneId = parseInt(req.params['sceneId'] as string);
@@ -58,19 +78,9 @@ export class ReadController {
       res.send(await this.sceneService.getScene(req.user.id, storyId, sceneId));
    }
 
-   getAllScenes = async (req: Request, res: Response) => {
-      const storyId = parseInt(req.params['storyId'] as string);
-
-      res.send(await this.sceneService.getAllScenes(req.user.id, storyId));
-   }
-
-   getChoice = async (req: Request, res: Response) => {
-      const storyId = parseInt(req.params['storyId'] as string);
-      const choiceId = parseInt(req.params['choiceId'] as string);
-
-      res.send(await this.choiceService.getChoice(req.user.id, storyId, choiceId));
-   }
-
+   /**
+    * GET /read/story/:storyId/choice
+    */
    getAllChoices = async (req: Request, res: Response) => {
       const storyId = parseInt(req.params['storyId'] as string);
 
@@ -79,5 +89,16 @@ export class ReadController {
          storyId
       }));
    }
+
+   /**
+    * GET /read/story/:storyId/choice/:choiceId
+    */
+   getChoice = async (req: Request, res: Response) => {
+      const storyId = parseInt(req.params['storyId'] as string);
+      const choiceId = parseInt(req.params['choiceId'] as string);
+
+      res.send((await this.choiceService.getChoice(req.user.id, storyId, choiceId)) || {});
+   }
+
 
 }

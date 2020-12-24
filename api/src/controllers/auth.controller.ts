@@ -21,6 +21,9 @@ export class AuthController {
       this.router.post(`${this.path}/login`, this.login)
    }
 
+   /**
+    * POST /auth/register
+    */
    register = async (req: Request, res: Response) => {
       try {
          await this.authService.register(req.body.username, req.body.password);
@@ -30,6 +33,9 @@ export class AuthController {
       }
    }
 
+   /**
+    * POST /auth/login
+    */
    login = async (req: Request, res: Response) => {
       try {
          res.send(await this.authService.login(req.body.username, req.body.password))
