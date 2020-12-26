@@ -13,11 +13,11 @@ import { PlayerLayoutComponent } from './player-layout/player-layout.component';
     BrowseStoriesComponent,
     PlayStoryComponent,
     CharacterCreationComponent,
+    PlayerLayoutComponent
   ],
   imports: [
     CommonModule,
     PlayerRoutingModule,
   ],
-  providers: [],
 })
 export class PlayerModule { }
