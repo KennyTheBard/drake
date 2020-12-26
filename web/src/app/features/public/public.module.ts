@@ -16,7 +16,6 @@ import { CommonModule } from '@angular/common';
     RecoverComponent,
     ActivateComponent,
     ResetComponent,
-    PublicLayoutComponent
   ],
   imports: [
     CommonModule,

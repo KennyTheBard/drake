@@ -5,13 +5,14 @@ import { BrowseStoriesComponent } from './browse-stories/browse-stories.componen
 import { PlayStoryComponent } from './play-story/play-story.component';
 import { CharacterCreationComponent } from './character-creation/character-creation.component';
 import { CommonModule } from '@angular/common';
+import { PlayerLayoutComponent } from './player-layout/player-layout.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     BrowseStoriesComponent,
     PlayStoryComponent,
-    CharacterCreationComponent
+    CharacterCreationComponent,
   ],
   imports: [
     CommonModule,

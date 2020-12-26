@@ -13,6 +13,8 @@ export class NotAuthGuard implements CanActivate {
   }
 
   async canActivate() {
+    // TODO: Fix this later
+    return true;
     const user = await this.store.getUser().toPromise();
 
     if (user) {
