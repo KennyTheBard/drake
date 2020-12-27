@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AnalyticsComponent } from './analytics/analytics.component';
+import { AnalyticsComponent } from './pages/analytics/analytics.component';
 import { AuthorLayoutComponent } from './author-layout/author-layout.component';
-import { WritingComponent } from './writing/writing.component';
+import { WritingComponent } from './pages/writing/writing.component';
 
 const routes: Routes = [
   {
