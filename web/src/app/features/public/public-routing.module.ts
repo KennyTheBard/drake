@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { ActivateComponent } from './activate/activate.component';
-import { LoginComponent } from './login/login.component';
+import { ActivateComponent } from './pages/activate/activate.component';
+import { LoginComponent } from './pages/login/login.component';
 import { PublicLayoutComponent } from './public-layout/public-layout.component';
-import { RecoverComponent } from './recover/recover.component';
-import { RegisterComponent } from './register/register.component';
-import { ResetComponent } from './reset/reset.component';
+import { RecoverComponent } from './pages/recover/recover.component';
+import { RegisterComponent } from './pages/register/register.component';
+import { ResetComponent } from './pages/reset/reset.component';
 
 const routes: Routes = [
   {

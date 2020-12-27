@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { BrowseStoriesComponent } from './browse-stories/browse-stories.component';
-import { CharacterCreationComponent } from './character-creation/character-creation.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { PlayStoryComponent } from './play-story/play-story.component';
+import { BrowseStoriesComponent } from './pages/browse-stories/browse-stories.component';
+import { CharacterCreationComponent } from './pages/character-creation/character-creation.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { PlayStoryComponent } from './pages/play-story/play-story.component';
 import { PlayerLayoutComponent } from './player-layout/player-layout.component';
 
 const routes: Routes = [{

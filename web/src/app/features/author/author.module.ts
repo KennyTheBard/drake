@@ -2,16 +2,16 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AuthorRoutingModule } from './author-routing.module';
-import { AnalyticsComponent } from './analytics/analytics.component';
-import { WritingComponent } from './writing/writing.component';
+import { AnalyticsComponent } from './pages/analytics/analytics.component';
+import { WritingComponent } from './pages/writing/writing.component';
 import { AuthorLayoutComponent } from './author-layout/author-layout.component';
+import { authorPages } from './pages';
 
 
 @NgModule({
   declarations: [
-    AnalyticsComponent,
-    WritingComponent,
-    AuthorLayoutComponent
+    AuthorLayoutComponent,
+    ...authorPages
   ],
   imports: [
     CommonModule,
