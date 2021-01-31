@@ -1,0 +1,205 @@
+@host = http://localhost:3000
+
+
+
+################
+### Auth
+################
+
+### Register request
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+   "username": "octav",
+   "password": "test"
+}
+
+### Login request
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+   "username": "octav",
+   "password": "test"
+}
+
+
+
+################
+### Write
+################
+
+### Create story
+POST {{host}}/api/write/story
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "title": "Story",
+   "description": "And this is a description"
+}
+
+### Set starting scene
+PUT {{host}}/api/write/start
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "sceneId": 14
+}
+
+### Create scene
+POST {{host}}/api/write/scene
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "title": "Story",
+   "text": "This is a text",
+   "choiceId": 14
+}
+
+### Mark scene as ending
+PUT {{host}}/api/write/end
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "sceneId": 12,
+   "isEnding": true
+}
+
+### Create choice
+POST {{host}}/api/write/choice
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "sceneId": 12,
+   "text": "This is a choice"
+}
+
+### Bind choice as option
+PUT {{host}}/api/write/bind/option
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "prevSceneId": 12,
+   "choiceId": 14
+}
+
+### Bind scene as next
+PUT {{host}}/api/write/bind/next
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "nextSceneId": 12,
+   "choiceId": 14
+}
+
+
+
+################
+### Read
+################
+
+### Get all stories
+GET {{host}}/api/read/story
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Get story
+GET {{host}}/api/read/story/7
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Get all scenes for a story
+GET {{host}}/api/read/story/7/scene
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Get scene of a story
+GET {{host}}/api/read/story/7/scene/12
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Get starting scene of a story
+GET {{host}}/api/read/story/7/start
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Get all choices for a story
+GET {{host}}/api/read/story/7/choice
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Get choice of a story
+GET {{host}}/api/read/story/7/choice/13
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+
+
+################
+### Erase
+################
+
+### Delete choice
+DELETE {{host}}/api/erase/choice
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "choiceId": 14
+}
+
+### Delete scene
+DELETE {{host}}/api/erase/scene
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+{
+   "storyId": 7,
+   "sceneId": 12
+}
+
+
+
+################
+### Check
+################
+
+### Check for deadends (scenes without choices but not marked as endings)
+GET {{host}}/api/check/7/deadend
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Check for dangling choices
+GET {{host}}/api/check/7/dangling
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Check for fake endings (scenes marked as ending but with choices)
+GET {{host}}/api/check/7/fake-ending
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Check for unreachable plots
+GET {{host}}/api/check/7/unreachable
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
+
+### Check for orphans choices
+GET {{host}}/api/check/7/orphan
+Content-Type: application/json
+Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
