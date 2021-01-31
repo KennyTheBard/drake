@@ -17,8 +17,8 @@ export class AuthController {
 
       if (middlewares) middlewares.forEach(mw => this.router.use(mw));
 
-      this.router.post(`${this.path}/register`, this.register)
-      this.router.post(`${this.path}/login`, this.login)
+      this.router.post(`/register`, this.register)
+      this.router.post(`/login`, this.login)
    }
 
    /**

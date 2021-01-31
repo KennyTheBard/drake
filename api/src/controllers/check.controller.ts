@@ -2,6 +2,7 @@ import { Request, RequestHandler, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import { InstanceManager } from '../util/instance-manager';
 import { CheckService } from '../services/check.service';
+import { AuthenticateUserMiddleware } from '../middleware/authenticate-user';
 
 export class CheckController {
 
@@ -10,12 +11,10 @@ export class CheckController {
 
    private checkService: CheckService;
 
-   constructor(
-      middlewares?: RequestHandler[],
-   ) {
+   constructor() {
       this.checkService = InstanceManager.get(CheckService);
 
-      if (middlewares) middlewares.forEach(mw => this.router.use(mw));
+      this.router.use(InstanceManager.get(AuthenticateUserMiddleware).use)
 
       // TODO: rewrite deadends as scenes 
       this.router.get(`${this.path}/:storyId/deadend`, this.checkForDeadends);

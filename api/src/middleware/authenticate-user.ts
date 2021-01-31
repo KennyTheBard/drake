@@ -1,14 +1,21 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/auth.service';
+import { InstanceManager } from '../util/instance-manager';
 
-export function authenticateUser(authService: AuthService) {
-   return async (req: Request, res: Response, next: () => void) => {
+export class AuthenticateUserMiddleware {
+   private authService: AuthService;
+
+   constructor() {
+      this.authService = InstanceManager.get(AuthService);
+   };
+
+   use = async (req: Request, res: Response, next: () => void) => {
       const authToken: string = req.headers['authorization'];
       if (!authToken) {
          res.status(401).send();
       }
 
-      req.user = await authService.validate(authToken);
+      req.user = await this.authService.validate(authToken);
       next();
    }
 }

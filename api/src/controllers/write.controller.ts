@@ -4,6 +4,7 @@ import { SceneService } from '../services/scene.service';
 import { ChoiceService } from '../services/choice.service';
 import { StoryService } from '../services/story.service';
 import { InstanceManager } from '../util/instance-manager';
+import { AuthenticateUserMiddleware } from '../middleware/authenticate-user';
 
 export class WriteController {
 
@@ -14,14 +15,12 @@ export class WriteController {
    private sceneService: SceneService;
    private choiceService: ChoiceService;
 
-   constructor(
-      middlewares?: RequestHandler[],
-   ) {
+   constructor() {
       this.storyService = InstanceManager.get(StoryService);
       this.sceneService = InstanceManager.get(SceneService);
       this.choiceService = InstanceManager.get(ChoiceService);
 
-      if (middlewares) middlewares.forEach(mw => this.router.use(mw));
+      this.router.use(InstanceManager.get(AuthenticateUserMiddleware).use)
 
       this.router.post(`${this.path}/story`, this.createStory);
       this.router.put(`${this.path}/start`, this.setStartingScene);

@@ -1,13 +1,12 @@
 @host = http://localhost:3000
 
 
-
 ################
 ### Auth
 ################
 
 ### Register request
-POST {{host}}/api/auth/register
+POST {{host}}/auth/register
 Content-Type: application/json
 
 {
@@ -16,7 +15,7 @@ Content-Type: application/json
 }
 
 ### Login request
-POST {{host}}/api/auth/login
+POST {{host}}/auth/login
 Content-Type: application/json
 
 {
@@ -31,7 +30,7 @@ Content-Type: application/json
 ################
 
 ### Create story
-POST {{host}}/api/write/story
+POST {{host}}/write/story
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -41,7 +40,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 }
 
 ### Set starting scene
-PUT {{host}}/api/write/start
+PUT {{host}}/write/start
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -51,7 +50,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 }
 
 ### Create scene
-POST {{host}}/api/write/scene
+POST {{host}}/write/scene
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -63,7 +62,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 }
 
 ### Mark scene as ending
-PUT {{host}}/api/write/end
+PUT {{host}}/write/end
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -74,7 +73,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 }
 
 ### Create choice
-POST {{host}}/api/write/choice
+POST {{host}}/write/choice
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -85,7 +84,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 }
 
 ### Bind choice as option
-PUT {{host}}/api/write/bind/option
+PUT {{host}}/write/bind/option
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -96,7 +95,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 }
 
 ### Bind scene as next
-PUT {{host}}/api/write/bind/next
+PUT {{host}}/write/bind/next
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -113,37 +112,37 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 ################
 
 ### Get all stories
-GET {{host}}/api/read/story
+GET {{host}}/read/story
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Get story
-GET {{host}}/api/read/story/7
+GET {{host}}/read/story/7
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Get all scenes for a story
-GET {{host}}/api/read/story/7/scene
+GET {{host}}/read/story/7/scene
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Get scene of a story
-GET {{host}}/api/read/story/7/scene/12
+GET {{host}}/read/story/7/scene/12
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Get starting scene of a story
-GET {{host}}/api/read/story/7/start
+GET {{host}}/read/story/7/start
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Get all choices for a story
-GET {{host}}/api/read/story/7/choice
+GET {{host}}/read/story/7/choice
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Get choice of a story
-GET {{host}}/api/read/story/7/choice/13
+GET {{host}}/read/story/7/choice/13
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -154,7 +153,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 ################
 
 ### Delete choice
-DELETE {{host}}/api/erase/choice
+DELETE {{host}}/erase/choice
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -164,7 +163,7 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 }
 
 ### Delete scene
-DELETE {{host}}/api/erase/scene
+DELETE {{host}}/erase/scene
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
@@ -180,26 +179,26 @@ Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 ################
 
 ### Check for deadends (scenes without choices but not marked as endings)
-GET {{host}}/api/check/7/deadend
+GET {{host}}/check/7/deadend
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Check for dangling choices
-GET {{host}}/api/check/7/dangling
+GET {{host}}/check/7/dangling
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Check for fake endings (scenes marked as ending but with choices)
-GET {{host}}/api/check/7/fake-ending
+GET {{host}}/check/7/fake-ending
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Check for unreachable plots
-GET {{host}}/api/check/7/unreachable
+GET {{host}}/check/7/unreachable
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3
 
 ### Check for orphans choices
-GET {{host}}/api/check/7/orphan
+GET {{host}}/check/7/orphan
 Content-Type: application/json
 Authorization: 42792a3f-6bd0-4810-bf4b-50126419cfc3

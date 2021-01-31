@@ -1,4 +1,5 @@
-import { Request, RequestHandler, Response, Router } from 'express';
+import { AuthenticateUserMiddleware } from './../middleware/authenticate-user';
+import { Request, Response, Router } from 'express';
 import { PlayService } from '../services/play.service';
 import { InstanceManager } from '../util/instance-manager';
 
@@ -9,12 +10,10 @@ export class PlayController {
 
    private playService: PlayService;
 
-   constructor(
-      middlewares?: RequestHandler[],
-   ) {
+   constructor() {
       this.playService = InstanceManager.get(PlayService);
 
-      if (middlewares) middlewares.forEach(mw => this.router.use(mw));
+      this.router.use(InstanceManager.get(AuthenticateUserMiddleware).use)
 
       this.router.get(`${this.path}`, this.getCurrentScene);
       this.router.post(`${this.path}`, this.makeChoice)
