@@ -1,1 +1,18 @@
-<p>register works!</p>
+<form #ngForm="ngForm" [formGroup]="form" (ngSubmit)="registerAccount(form)">
+   <div>
+      <label>Username</label>
+      <input type="text" formControlName="username"/>
+   </div>
+
+   <div>
+      <label>Password</label>
+      <input type="password" formControlName="password"/>
+   </div>
+
+   <div>
+      <label>Retype password</label>
+      <input type="password" formControlName="retypePassword"/>
+   </div>
+
+   <input type="submit" title="Register" />
+</form>

@@ -1,3 +1,4 @@
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { PublicRoutingModule } from './public-routing.module';
 import { CommonModule } from '@angular/common';
@@ -13,6 +14,8 @@ import { publicPages } from './pages';
   imports: [
     CommonModule,
     PublicRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
   ]
 })
 export class PublicModule { }
